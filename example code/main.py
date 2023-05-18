@@ -4,7 +4,9 @@ import random
 import math
 
 def distance (node1, node2):
-    return math.sqrt((node1.x-node2.x)**2 + (node1.y-node2.y)**2)
+    print("distance: " + str(math.sqrt(pow((node1.x-node2.x), 2) + pow((node1.y-node2.y), 2))))
+    return math.sqrt(pow((node1.x-node2.x), 2) + pow((node1.y-node2.y), 2))
+
 
 if __name__ == "__main__":
     # Generate a list of nodes
@@ -20,9 +22,17 @@ if __name__ == "__main__":
         node.ID = i
         node.x = random.randint(0, 200)
         node.y = random.randint(0,200)
-
-        node_list.append(node)
+    
         # check duplication?
+        for k in node_list:
+            if k.x != node.x and k.y != node.y:
+                continue
+            else:
+                print("collision")
+                node.x = random.unform(0,200)
+                node.y = random.uniform(0,200)
+        
+        node_list.append(node)
         pass
 
     # Update neighbors
