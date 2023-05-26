@@ -12,31 +12,30 @@ e_active_idle = 0.06
 
 
 class Node:
-    ## The constructor
-    def __init__(self, ID=0, x=0.0, y=0.0, timeslot=-1):
-        ## ID of a node
-        self.ID = ID
-        ## x-axis position
+    # The constructor
+    def __init__(self, node_id=0, x=0.0, y=0.0, timeslot=-1):
+        # ID of a node
+        self.ID = node_id
+        # x-axis position
         self.x = x
-        ## y-axis position
+        # y-axis position
         self.y = y
-        ## ID of the parent
+        # ID of the parent
         self.parentID = None
-        ## list of children
+        # list of children
         self.childrenIDs = []
-        ## list of neighbors
+        # list of neighbors
         self.neighbors = []
-        ## active time slot
+        # active time slot
         self.timeslot = timeslot
-        ## assigned transmitting working period
+        # assigned transmitting working period
         self.tx_wp = -1
-        ## cycle
+        # cycle
         self.cycle = -1
-        ## distance from the source, for building a BFS Tree
+        # distance from the source, for building a BFS Tree
         self.distance = 100000
-        ## lowerbound of aggregation time to a node (# working period), considering primary collisions only
+        # lower bound of aggregation time to a node (# working period), considering primary collisions only
         self.lb_agg_wp = -1
-
 
         self.cw_dedas = 0  # for dedas scheme
         # for 2016 scheme leaf scheduling
@@ -44,17 +43,18 @@ class Node:
         self.sdu = -1
         self.tuv = -1
 
-        self.layer = -1         # layer in the SPT
-        self.layer_cds = -1     # layer in the dtc_fas scheme
-        self.isdominator = False
-        self.isconnector = False
+        self.layer = -1  # layer in the SPT
+        self.layer_cds = -1  # layer in the dtc_fas scheme
+        self.is_dominator = False
+        self.is_connector = False
         self.distance_to_prev_dominator = -1
         self.connector = None
         self.prev_dominator = None
         self.next_layer_neighbors = []
         self.prev_layer_neighbors = []
         # list of working periods that this node will receive data
-        # note: in the original pseudo code, the author only store the highest working period, we are keeping track of all
+        # note: in the original pseudocode, the author only store the highest working period
+        # we are keeping track of all
         self.rx_wp = [0]
         # list of working periods that this node will hear other transmissions
         self.overhearing = []
@@ -65,6 +65,4 @@ class Node:
         # for constructing dfs tree:
         self.discovered = False
 
-        self.mat_dc = -1 # for MAT calculation for duty cycle network
-
-
+        self.mat_dc = -1  # for MAT calculation for duty cycle network

@@ -1,6 +1,8 @@
 import sys
 import queue
+
 INFINITY = sys.maxsize - 1
+
 
 def build_bfs(node_list):
     # Build a Breadth First Search Tree, equivalent to an SPT in case all edge costs are 1
@@ -56,7 +58,7 @@ def bspt_sm1(node_list):
     :return:
     """
     # first reset the tree built, if any
-    #delete_tree(node_list)
+    # delete_tree(node_list)
     # then do the scheduling
 
     """
@@ -232,7 +234,8 @@ def mlst(node_list):
         for i in added:
             for j in node_list[i].neighbors:
                 if node_list[j].added == 0:
-                    cij = M * M * (len(node_list[i].childrenIDs) + node_list[i].hopCount) + M * node_list[i].nnbrs + node_list[j].nnbrs
+                    cij = M * M * (len(node_list[i].childrenIDs) + node_list[i].hopCount) + M * node_list[i].nnbrs + \
+                          node_list[j].nnbrs
                     if cij < mincost:
                         mincost = cij
                         tobe_added = j
@@ -278,7 +281,7 @@ def hop_count(node_list):
         u.distance = 10000
     node_list[0].distance = 0
     max_distance = 0
-    while(True):
+    while (True):
         if len(queue) > 0:
             u = queue[0]
             queue.remove(u)

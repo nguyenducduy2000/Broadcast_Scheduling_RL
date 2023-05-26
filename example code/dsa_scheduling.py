@@ -1,8 +1,10 @@
 import queue
 import sys
-from libs import dtc_fas
+
+# from libs import dtc_fas
 
 INFINITY = sys.maxsize - 1
+
 
 def dsa_scheduling(node_list, duty_cycle):
     """
@@ -17,14 +19,14 @@ def dsa_scheduling(node_list, duty_cycle):
     t = 0
     Sf = []
     node_set = set([i for i in range(0, len(node_list))])
-    while len(Sf) < len(node_list) -1:  # we don't count sink node in
-        #print len(Sf)
+    while len(Sf) < len(node_list) - 1:  # we don't count sink node in
+        # print len(Sf)
         eligible_nodes, scheduled_nodes = get_eligible_nodes(node_list, duty_cycle, t)
-        #print eligible_nodes, scheduled_nodes
-        non_leaf_nodes = node_set.difference(set(eligible_nodes+scheduled_nodes))
+        # print eligible_nodes, scheduled_nodes
+        non_leaf_nodes = node_set.difference(set(eligible_nodes + scheduled_nodes))
         weight_calc(node_list, eligible_nodes, non_leaf_nodes, t % duty_cycle)
         sorted_eligible_nodes = sorted(eligible_nodes, key=lambda x: node_list[x].dcat_weight, reverse=False)
-        #print("at time slot", t, "candidate senders:", sorted_eligible_nodes)
+        # print("at time slot", t, "candidate senders:", sorted_eligible_nodes)
         S = []
         R = []
         greedy_scheduling(node_list, sorted_eligible_nodes, S, R, duty_cycle, t)
@@ -55,8 +57,8 @@ def dsa_scheduling_wo_dynamic(node_list, duty_cycle):
         S = []
         R = []
         greedy_scheduling_wo_dynamic(node_list, sorted_eligible_nodes, S, R, duty_cycle, t)
-        #remaining_eligible_nodes = [x for x in sorted_eligible_nodes if x not in S]
-        #greedy_scheduling(node_list, remaining_eligible_nodes, S, R, duty_cycle, t)
+        # remaining_eligible_nodes = [x for x in sorted_eligible_nodes if x not in S]
+        # greedy_scheduling(node_list, remaining_eligible_nodes, S, R, duty_cycle, t)
         Sf += S
         t += 1
     pass
@@ -81,7 +83,8 @@ def get_eligible_nodes(node_list, duty_cycle, time_now):
         if u.tx_wp == -1:  # u is not assigned a transmitting working period
             if len(u.childrenIDs) > 0:  # u has child(ren)
                 for c in u.childrenIDs:
-                    if node_list[c].tx_wp == -1:  # all of its children must have got tx_wp, else break and eligible = False
+                    if node_list[
+                        c].tx_wp == -1:  # all of its children must have got tx_wp, else break and eligible = False
                         break
                 else:
                     eligible = True
@@ -90,7 +93,8 @@ def get_eligible_nodes(node_list, duty_cycle, time_now):
         else:
             scheduled.append(u.ID)
         if eligible:
-            if (max(u.rx_wp) - 1) * duty_cycle + u.timeslot < time_now: #  is u ready for transmitting? depend on its <rx_wp, active_timeslot>
+            if (
+                    max(u.rx_wp) - 1) * duty_cycle + u.timeslot < time_now:  # is u ready for transmitting? depend on its <rx_wp, active_timeslot>
                 for ne in u.neighbors:
                     if node_list[ne].timeslot == time_now % duty_cycle and node_list[ne].tx_wp == -1:
                         eligible_nodes.append(u.ID)
@@ -184,7 +188,7 @@ def greedy_scheduling(node_list, eligible_nodes, current_senders, current_receiv
 
                             # if all the children have been scheduled
                             else:
-                                if (max(node_list[p].rx_wp)-1) * duty_cycle + node_list[p].timeslot < time_now:
+                                if (max(node_list[p].rx_wp) - 1) * duty_cycle + node_list[p].timeslot < time_now:
                                     eligible_queue.put(p)
                         else:
                             eligible_queue.put(p)
@@ -222,33 +226,31 @@ def greedy_scheduling_wo_dynamic(node_list, eligible_nodes, current_senders, cur
                         current_receivers.append(node_list[u].parentID)
     pass
 
-
-
-def dijkstra_duty_cycle(node_list, dutycycle):
-    """
-    building a Shortest Path Tree using Dijkstra algorithm, with link cost is the duty cycle delay
-    :param node_list:
-    :param dutycycle:
-    :return:
-    """
-    q = []
-    for i in range(0, len(node_list)):
-        node_list[i].distance = INFINITY
-        q.append(i)
-    node_list[0].distance = 0
-    while len(q) > 0:
-        receiver = min(q, key=lambda x: node_list[x].distance)
-        q.remove(receiver)
-        for sender in node_list[receiver].neighbors:
-            alt = node_list[receiver].distance + dtc_fas.delay(node_list, sender, receiver, dutycycle)
-            if alt < node_list[sender].distance:
-                node_list[sender].distance = alt
-                node_list[sender].parentID = receiver
-
-    for i in range(0, len(node_list)):
-        if node_list[i].parentID is not None:
-            u = node_list[i].parentID
-            node_list[u].childrenIDs.append(i)
-        else:
-            # print(node_list[i].ID)  # root node
-            pass
+# def dijkstra_duty_cycle(node_list, dutycycle):
+#     """
+#     building a Shortest Path Tree using Dijkstra algorithm, with link cost is the duty cycle delay
+#     :param node_list:
+#     :param dutycycle:
+#     :return:
+#     """
+#     q = []
+#     for i in range(0, len(node_list)):
+#         node_list[i].distance = INFINITY
+#         q.append(i)
+#     node_list[0].distance = 0
+#     while len(q) > 0:
+#         receiver = min(q, key=lambda x: node_list[x].distance)
+#         q.remove(receiver)
+#         for sender in node_list[receiver].neighbors:
+#             alt = node_list[receiver].distance + dtc_fas.delay(node_list, sender, receiver, dutycycle)
+#             if alt < node_list[sender].distance:
+#                 node_list[sender].distance = alt
+#                 node_list[sender].parentID = receiver
+#
+#     for i in range(0, len(node_list)):
+#         if node_list[i].parentID is not None:
+#             u = node_list[i].parentID
+#             node_list[u].childrenIDs.append(i)
+#         else:
+#             # print(node_list[i].ID)  # root node
+#             pass
