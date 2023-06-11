@@ -1,7 +1,8 @@
 from node import Node
-from trees import build_dfs
+# from trees import build_dfs
 import random
 import math
+from dsa_scheduling import get_eligible_nodes
 
 def distance (node1, node2):
     print("distance: " + str(math.sqrt(pow((node1.x-node2.x), 2) + pow((node1.y-node2.y), 2))))
@@ -20,9 +21,16 @@ def count_Cv(node, child):
 #     tree.append(node_list[0])
 #     while 
 
+def isDuplicate(node_list, x, y, radius):
+    for node in node_list:
+        dist = math.sqrt((node.x - x) ** 2 + (node.y - y) ** 2)
+        if dist <= radius:
+            return True
+    return False
+
+
 def build_DFS(node_list):
-    list = []
-    list.append(0)
+    list = [0]
     while len(list) > 0:
         v = list[-1]
         list.remove(v)
@@ -39,11 +47,11 @@ def build_DFS(node_list):
 
 if __name__ == "__main__":
     # Generate a list of nodes
+    N = 400  # number of nodes
     X = 200  # X-dimension
     Y = 200  # Y-dimension
     R = 30   # communication range
-    N = 400 # number of nodes
-
+    
     node_list = []
     for i in range(0, N):
         # generate a node
@@ -51,6 +59,7 @@ if __name__ == "__main__":
         node.ID = i
         node.x = random.uniform(0, 200)
         node.y = random.uniform(0,200)
+
         # check duplication?
         for k in node_list:
             if k.x != node.x and k.y != node.y:
@@ -59,15 +68,14 @@ if __name__ == "__main__":
                 print("collision")
                 node.x = random.uniform(0,200)
                 node.y = random.uniform(0,200)
-                
-                
+                          
         node_list.append(node)
         pass
 
     # Update neighbors
-    # loop through node_list
-    # check distance < 30
-    # node_list[i].neighbors.append(<id>)
+        # loop through node_list
+        # check distance < 30
+        # node_list[i].neighbors.append(<id>)
     for i in range(0,N):
         for k in range(1,N):
             if(distance(node_list[i], node_list[k]) < 30):
@@ -79,8 +87,35 @@ if __name__ == "__main__":
     for list in node_list:
         print(list.neighbors)
         print(str(list.x) + " and " + str(list.y))
+
     # Do some scheduling algorithm
-    # Iterative
-    # Per time slot: get eligible nodes (nodes that can be scheduled--> exclude scheduled nodes and..?)
-    # 
+        # Iterative
+        # Per time slot: get eligible nodes (nodes that can be scheduled--> exclude s
+            # <loop>
+                #  Traverse the list of eligible nodes (one by one)
+                #  Forbid potentially collided transmissions (related neighbors of the considering node)
+                # → Avoid primary and secondary collisions
+            # <end-loop>
+
+    t = 0
+    scheduled_nodes = []
+    while( len(scheduled_nodes) < N-1): # both broadcast and aggergation: exclude sink (source) node
+        eligible_nodes = get_eligible_nodes(node_list)
+
+        # Put nodes in eligible nodes into a queue
+        while(Q is not empty):
+            # Pop an element from Q (i.e., a node)
+        # Check secondary collisions
+        for f in node_list[e.parendID].neighbors:
+            aa
+            # Check if f in eligible nodes?
+            # Eligible_nodes.remove(f)
+        # Check for primary collision:
+            # Remove all nodes that cause primary collision with the transmission from e to e.parentID
+        e.tx_time_slot = t
+
+        t += 1
+        
+    # return t - return time after done scheduling
+    
     pass
