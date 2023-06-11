@@ -1,0 +1,2 @@
+EER-RL: https://github.com/viallykaz/EER-RL
+RLRP ad hoc routing protocol: https://github.com/dugdmitry/adhoc_routing
