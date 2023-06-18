@@ -1,0 +1,107 @@
+### Network set-up and cluster head election algorithm
+For i in range n do{
+    S(i).dist = Euclidean(S(i), sink)
+    S(i).hop = (S(i).dist/Tx_range)
+    S(i).Q = p*((S(i).E - E_min)/(E_max - E_min)) + (1-p)*(1/S(i).hop)
+}
+End for
+While length (CH_table <= CH_tot) do{
+    Q_max = max(S.Q)
+    For i = 1 to n, do{
+        if (Min_thres <= S(i).dist < Max_thres) then{
+            if (length(CH_table == 0)) then{
+                CH_table.append(S(i))
+                S.pop(S(i))
+            }
+            else{
+                for h = 1 to length(CH_table) do{
+                    dts = Euclidean(S(i), CH(h))
+                    if (dts >= Min_thres) then{
+                        C = true
+                    }
+                    else{
+                        C = false
+                        Break
+                    }
+                    End if
+                }
+                End for
+                if (C == true) then{
+                    CH_table.append(S(i))
+                    S.pop(S(i))
+                }
+                End if
+            }
+            End if
+        }
+        End if
+    }
+    End for
+}
+End While
+
+### Cluster formation ###
+For i = 1 to CH_tot do{
+    for j = 1 to n do{
+        dtsCh (j, i) = Euclidean(S(i), CH(i))
+        if (dtsCH(j, i) <= CH(i).Tx_range) then{
+            CH(i).send_invitation(S(i))
+        }
+        End if
+    }
+    End for
+}
+End for
+For j = 1 to n do{
+    if (S(j).dts <= Tx_range) then{
+        S(j).dest = sink
+    }
+    else{
+        For i = 1 to CH_tot do{
+            if (Invitation (j, i) != empty) then{
+                if (dtsCh (j, i) <= min(dtsCH(j,:))) then{
+                    S(j).dest = CH(i).ID
+                    Create Neigh(j,:)
+                    Cluster(i).append(S(j).ID)
+                }
+                End if
+            }
+            End if
+        }
+        End for
+    }
+    End if
+}
+End for
+
+### Data transmission ###
+for i = 1 to n do{
+    if (S(i).E > 0) then{
+        maxQ = max(Q(i,:))
+        if (S(i).d <= Tx_range){
+            if (S(i) is NextHop) then{
+                Aggregate Data
+                send data to link
+            }
+            else{
+                send data to link
+            }
+            End if
+        }
+        Else if (S(i).role == 0) then{
+            if (CH within Tx_range) then{
+                send data to CH
+            }
+            Else{
+                find closest Neighbor in the cluster
+                send data to closest Neighbor
+            }
+            End if
+        }
+        End if
+        Compute reward
+        Update Q-value
+    }
+    End if
+}
+End for

@@ -1,0 +1,100 @@
+#### Initial routing Algorithm ###
+for i=1 to n do{
+    nID = 1 #Neighbor ID
+    for j = 1 to n do{
+        dist = Euclidean(S(i),S(j))
+        if (dist <= R) then{
+            Neigh[i,nID].append(S(j))
+            S.dist(i,nID).append(dist)
+            nID = nID + 1
+        }
+        End
+    }
+    End
+}
+End
+
+for i = 1 to n do{
+    E.min = min(Neigh(i,:))
+    E.max = max(Neigh(i,:))
+    for j = 1 to n do{
+        if (S(j) belong to Neigh(i,:)) then{
+            for n = 1 to len(Neigh(i,:)) do{
+                if (E.min == E.max) then{
+                    Q(i,n) = 1/S(j).hop
+                }
+                else{
+                    Q(i,n) = p*((S(j).E - E.min) / (E.max - E.min)) + (1-p)*(1/S(j).hop)
+                }
+                End
+            }
+            End
+        }
+        End
+    }
+    End
+}
+End
+
+for i = 1 to n do{
+    nID = 1 
+    maxQ = max(Q(i,nID))
+    for j =1 to n do{
+        if (S(j) belong to Neigh(i,:)) then{
+            if Q(i,nID) == maxQ then{
+                return S(j)
+            }
+            End
+            nID = nID +1
+        }
+        End
+    }
+    End
+}
+End
+
+### Data transmission ###
+for i = 1 to n do{
+    if (S(i).E > 0) then{
+        maxQ = max(Q(source,:))
+        if ((S(i).Q >= maxQ) or (S(i).d <= 20)) then{
+            if ((Any sensornode) belong to NET has S(i) as NextHop) then{
+                Aggregate Data
+                send data to sink
+            }
+            else{
+                send data to link
+            }
+            End
+            Compute reward
+            Update Q-value
+        }
+
+        else{
+            Nneigh = 1
+            for j = 1 to n do{
+                if (S(j) belong to Neigh(i,:)) then{
+                    if (Q(i,Nneigh) == maxQ) then{
+                        if ((Any sensornode) belong to NET has S(i) as NextHop) then{
+                            Aggregate data
+                            send data to S(j)
+                        }
+                        else{
+                            send data to S(j)
+                        }
+                        End
+                        Compute reward
+                        Update Q-value
+                        End
+                    }
+                    Increment Neigh
+                }
+                End
+            }
+            End
+        }
+        End
+    }
+    End
+}
+End
